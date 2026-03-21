@@ -23,6 +23,20 @@ namespace lab18_20_siaod
             dataGridView2.ColumnCount = 15;
             dataGridView2.RowHeadersVisible = false;
             dataGridView2.ColumnHeadersVisible = false;
+
+            Clear_Tab();
+        }
+
+        // Функция ВВЕРХ для восстановления пирамидальности после вставки
+        private void Up(int[] A, int k)
+        {
+            while (k > 0 && A[(k - 1) / 2] < A[k])
+            {
+                int temp = A[k];
+                A[k] = A[(k - 1) / 2];
+                A[(k - 1) / 2] = temp;
+                k = (k - 1) / 2;
+            }
         }
 
         // Функция вывода содержимого массива A в таблицы dataGridView1 и dataGridView2
@@ -77,7 +91,11 @@ namespace lab18_20_siaod
         private void Button1_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 15; i++)
+            {
                 array[i] = rnd.Next(10, 100);
+                Up(array, i);
+            }
+
             Print(array);
         }
 
@@ -85,6 +103,7 @@ namespace lab18_20_siaod
         {
             for (int i = 0; i < 15; i++)
                 array[i] = 0;
+
             Clear_Tab();
         }
 
