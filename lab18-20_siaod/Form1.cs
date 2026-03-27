@@ -7,6 +7,8 @@ namespace lab18_20_siaod
     {
         private Random rnd = new Random();
         private int[] array = new int[15];
+        private int size = 0;
+        private int resultCount = 0;
 
         public Form1()
         {
@@ -24,6 +26,12 @@ namespace lab18_20_siaod
             dataGridView2.RowHeadersVisible = false;
             dataGridView2.ColumnHeadersVisible = false;
 
+            // Настройка таблицы результатов
+            dataGridView3.RowCount = 1;
+            dataGridView3.ColumnCount = 15;
+            dataGridView3.RowHeadersVisible = false;
+            dataGridView3.ColumnHeadersVisible = false;
+
             Clear_Tab();
         }
 
@@ -39,16 +47,42 @@ namespace lab18_20_siaod
             }
         }
 
-        // Функция вывода содержимого массива A в таблицы dataGridView1 и dataGridView2
+        // Функция ВНИЗ для восстановления пирамидальности после извлечения
+        private void Down(int[] A, int k, int n)
+        {
+            while (2 * k + 1 < n)
+            {
+                int j = 2 * k + 1;
+                if (j + 1 < n && A[j] < A[j + 1])
+                {
+                    j = j + 1;
+                }
+                if (A[k] >= A[j])
+                {
+                    break;
+                }
+                int temp = A[k];
+                A[k] = A[j];
+                A[j] = temp;
+                k = j;
+            }
+        }
+
+        // Функция вывода содержимого массива A
         private void Print(int[] A)
         {
             for (int i = 0; i < 15; i++)
             {
-                if (A[i] == 0)
+                if (i >= size || A[i] == 0)
                     dataGridView1.Rows[0].Cells[i].Value = "";
                 else
                     dataGridView1.Rows[0].Cells[i].Value = A[i].ToString();
             }
+
+            // Очистка перед перерисовкой дерева
+            for (int r = 0; r < 4; r++)
+                for (int c = 0; c < 15; c++)
+                    dataGridView2.Rows[r].Cells[c].Value = "";
 
             // Корень
             if (A[0] != 0) dataGridView2.Rows[0].Cells[7].Value = A[0].ToString();
@@ -90,12 +124,16 @@ namespace lab18_20_siaod
 
         private void Button1_Click(object sender, EventArgs e)
         {
+            size = 0;
             for (int i = 0; i < 15; i++)
             {
                 array[i] = rnd.Next(10, 100);
                 Up(array, i);
+                size++;
             }
 
+            resultCount = 0;
+            Clear_Tab();
             Print(array);
         }
 
@@ -104,7 +142,93 @@ namespace lab18_20_siaod
             for (int i = 0; i < 15; i++)
                 array[i] = 0;
 
+            size = 0;
+            resultCount = 0;
             Clear_Tab();
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            if (size == 0)
+            {
+                MessageBox.Show("Очередь пуста!");
+                return;
+            }
+            if (resultCount >= 15)
+            {
+                MessageBox.Show("Массив результатов переполнен!");
+                return;
+            }
+
+            int max = array[0];
+
+            array[0] = array[size - 1];
+            array[size - 1] = 0;
+            size--;
+
+            Down(array, 0, size);
+
+            dataGridView3.Rows[0].Cells[resultCount].Value = max.ToString();
+            resultCount++;
+
+            Print(array);
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            if (size >= 15)
+            {
+                MessageBox.Show("Очередь переполнена!");
+                return;
+            }
+
+            int newValue = (int)numericUpDown1.Value;
+            array[size] = newValue;
+            Up(array, size);
+            size++;
+
+            Print(array);
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            if (size == 0)
+            {
+                MessageBox.Show("Очередь пуста!");
+                return;
+            }
+
+            int oldValue = (int)numericUpDown2.Value;
+            int newValue = (int)numericUpDown3.Value;
+
+            int index = -1;
+            for (int i = 0; i < size; i++)
+            {
+                if (array[i] == oldValue)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+            {
+                MessageBox.Show("Элемент не найден!");
+                return;
+            }
+
+            array[index] = newValue;
+
+            if (newValue > oldValue)
+            {
+                Up(array, index);
+            }
+            else if (newValue < oldValue)
+            {
+                Down(array, index, size);
+            }
+
+            Print(array);
         }
 
         private void Button6_Click(object sender, EventArgs e)

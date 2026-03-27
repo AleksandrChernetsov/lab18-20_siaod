@@ -173,6 +173,7 @@
             button5.TabIndex = 5;
             button5.Text = "Изменить приоритет";
             button5.UseVisualStyleBackColor = true;
+            button5.Click += Button5_Click;
             // 
             // numericUpDown1
             // 
@@ -194,6 +195,7 @@
             button4.TabIndex = 3;
             button4.Text = "Вставить новый";
             button4.UseVisualStyleBackColor = true;
+            button4.Click += Button4_Click;
             // 
             // button2
             // 
@@ -217,6 +219,7 @@
             button3.TabIndex = 1;
             button3.Text = "Извлечь наибольший";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += Button3_Click;
             // 
             // button1
             // 
